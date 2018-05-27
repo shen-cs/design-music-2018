@@ -1,0 +1,12 @@
+.col-flex-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.stetch {
+  align-items: stretch;
+}
+
+.dark {
+  background-color: #000;
+}
