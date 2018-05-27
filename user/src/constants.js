@@ -1,8 +1,17 @@
 export const tracks = [
-  { title: '源頭', path: '/'},
-  { title: '公館', path: '/second'},
-  { title: '二重', path: '/third'},
-  { title: '大稻埕', path: '/fourth'},
-  { title: '關渡', path: '/fifth'},
-  { title: '淡水', path: '/sixth'},
+  { title: '湧', path: '/'},
+  { title: '濱', path: '/second'},
+  { title: '滯', path: '/third'},
+  { title: '沸', path: '/fourth'},
+  { title: '滅', path: '/fifth'},
+  { title: '流', path: '/sixth'},
 ];
+
+export const contents = [
+  { title: '湧', description: '源頭的流水，初始平靜而慢慢加速，潺潺的水聲，偶爾會有雷聲大雨，之後又漸趨平緩的一個歷程。'},
+  { title: '濱', description: '公館至大稻埕的河濱公園，時有大朋友小朋友散步，偶爾也會有失戀、情緒低落的人，交織成河濱平和的印象。'},
+  { title: '滯', description: '二重疏洪道的流速相對於淡水河其他流域緩慢，累積了一些雜質和混亂。'},
+  { title: '沸', description: '本首描寫大稻埕的興衰。由緩慢的開頭呈現現今已然沒落但還是有一點風味的樣態；速度的轉快彷彿回顧起過去的樣貌。最後隨性的漸弱收尾，試圖表現回到現代的安靜的感覺。'},
+  { title: '滅', description: '此首描寫想像中美軍在要求政府拓寬河道的情景。旋律呈現兩個人在對話，僵持不下，堅硬的拉扯的感覺。始終還是抵擋不了美軍的決定，河岸最終還是被炸掉了，當地居民也只能默默地接受。'},
+  { title: '流', description: '本首由四個淡水主要地景組成，依序為滬尾砲台、紅毛城、淡水老街、港口。交織出淡水的印象。試圖讓觀眾回歸聆聽的本質，因此本首無做點擊互動。'},
+]
