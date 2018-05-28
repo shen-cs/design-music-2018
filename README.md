@@ -4,5 +4,5 @@
 ## Project Structure
 * `display`: main webpage to display on the sreeen
 * `user`: mobile webpage for user to enter
-* `server`: server coordinating `display` and `user
+* `backdoor`: backdoor coordinating `display` and `user manaully
 `

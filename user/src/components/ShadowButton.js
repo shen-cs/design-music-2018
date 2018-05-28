@@ -9,7 +9,7 @@ export default class extends Component {
     // num: 0
   }
   handleTouchStart = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     
     this.setState({
       clicked: true,
@@ -17,7 +17,8 @@ export default class extends Component {
   }
 
   handleTouchLeave = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
+
     this.setState({
       clicked: false,
     })
@@ -35,7 +36,8 @@ export default class extends Component {
             onMouseUp={this.handleTouchLeave}
             onTouchStart={this.handleTouchStart}
             onTouchEnd={this.handleTouchLeave}
-            onClick={this.props.onClick}/>
+            onClick={this.props.onClick}
+            onTap={() => console.log('woow')}/>
         </div>
       </Grid>
     )
