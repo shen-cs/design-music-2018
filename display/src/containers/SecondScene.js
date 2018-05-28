@@ -22,11 +22,10 @@ export default class extends Component {
   render() {
     const storageRef = firebase.storage().ref();
     const sceneTwoRef = storageRef.child('scene_2');
-
+    const databaseRef = firebase.database().ref('/records_2');
+    let records = [];
     // const renderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight);
-      const renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight);
-      // renderer.backgroundColor = 0xb0d648;
-      // renderer.backgroundColor = 0xffffff;
+    const renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight);
     const stage = new PIXI.Container();
     document.body.appendChild(renderer.view);
     window.addEventListener('resize', onWindowResize);
@@ -60,6 +59,24 @@ export default class extends Component {
     gui.add(options, 'start');
     gui.add(options, 'export');
     gui.add(options, 'exportGIF');
+
+    const typeToAction = {
+      exhilirating: exhiliratingHandler,
+      peaceful: peacefulHandler,
+      grieving: grievingHandler,
+    };
+
+    databaseRef.on('value', (snap) => {
+      const newRecords = Object.values(snap.val());
+      if(newRecords.length !== records.length) {
+        const lastRecord = newRecords[newRecords.length - 1]
+        records.push(lastRecord);
+        // console.log(records);
+        const { type } = lastRecord;
+        // console.log(type);
+        typeToAction[type]();
+      }
+    })
 
     PIXI.loader
       .add('bank', bankBehind)

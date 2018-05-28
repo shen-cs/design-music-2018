@@ -9,7 +9,8 @@ export default class extends Component {
   render() {
     const storageRef = firebase.storage().ref();
     const sceneFiveRef = storageRef.child('scene_5');
-
+    const databaseRef = firebase.database().ref('/records_5');
+    let records = [];
     let scene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     
@@ -51,15 +52,26 @@ export default class extends Component {
     // scene.add(axesHelper);
     
     const colors = {
-      'lala': 0xff1493,
-      'wooow': 0x00ffff,
-      'woohoo': 0xffff00,
+      helpless: new THREE.Color('#5AA378'),
+      strong: new THREE.Color('#F78131'),
+      tight: new THREE.Color('#496787'),
     };
 
+    databaseRef.on('value', (snap) => {
+      const newRecords = Object.values(snap.val());
+      if(newRecords.length !== records.length) {
+        const lastRecord = newRecords[newRecords.length - 1]
+        records.push(lastRecord);
+        // console.log(records);
+        const { type } = lastRecord;
+        // console.log(type);
+        addSphere(colors[type]);
+      }
+    })
+
     let i = 0;
-    const addSphere = () => {
-      const colorList = Object.values(colors);
-      const color = colorList[Math.floor(Math.random() * colorList.length)];
+    const addSphere = (color) => {
+      
       const material = new THREE.MeshLambertMaterial({color});
       
       // const material = new THREE.MeshStandardMaterial({color});

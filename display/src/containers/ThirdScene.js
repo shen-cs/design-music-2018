@@ -9,7 +9,8 @@ export default class extends Component {
   render() {
     const storageRef = firebase.storage().ref();
     const sceneThreeRef = storageRef.child('scene_3');
-
+    const databaseRef = firebase.database().ref('/records_3');
+    let records = [];
     let scene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     let renderer = new THREE.WebGLRenderer();
@@ -28,6 +29,25 @@ export default class extends Component {
       'wooow': new THREE.Color(0, 255, 255),
       'woohoo': new THREE.Color(255, 255, 0)
     };
+
+    const typeToAction = {
+      exhilirating: () => addSprite(new THREE.Color('#FF9373')), // red
+      peaceful: () => addSprite(new THREE.Color('#FFCF48')), // yellow
+      grieving: () => addSprite(new THREE.Color('#9BD3F9')), // cyan
+    };
+
+    databaseRef.on('value', (snap) => {
+      const newRecords = Object.values(snap.val());
+      if(newRecords.length !== records.length) {
+        const lastRecord = newRecords[newRecords.length - 1]
+        records.push(lastRecord);
+        // console.log(records);
+        const { type } = lastRecord;
+        console.log(type);
+        typeToAction[type]();
+      }
+    })
+
     const addSprite = (color) => {
       const spriteMaterial = new THREE.SpriteMaterial({
           map: particleTexture, 

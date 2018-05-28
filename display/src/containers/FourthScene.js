@@ -18,6 +18,8 @@ export default class extends Component {
   render() {
     const storageRef = firebase.storage().ref();
     const sceneFourRef = storageRef.child('scene_4');
+    const databaseRef = firebase.database().ref('/records_4');
+    let records = [];
     const renderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight);
     const stage = new PIXI.Container();
     document.body.appendChild(renderer.view)
@@ -32,6 +34,23 @@ export default class extends Component {
       bikeOne: 0,
       bikeTwo: 0,
     };
+
+    const typeToAction = {
+      temple: () => buildObj('temple', templeList),
+      store: buildStore,
+      bike: buildBike,
+    };
+
+    databaseRef.on('value', (snap) => {
+      const newRecords = Object.values(snap.val());
+      if(newRecords.length !== records.length) {
+        const lastRecord = newRecords[newRecords.length - 1]
+        records.push(lastRecord);
+        // console.log(records);
+        const { type } = lastRecord;
+        typeToAction[type]();
+      }
+    })
     PIXI.loader
       .add('map', mapPic)
       .add('temple', temple)
@@ -77,15 +96,6 @@ export default class extends Component {
     gui.add(options, 'export');
     gui.add(options, 'exportGIF');
 
-    // const firebaseRef = firebase.database().ref('/records');
-    //     firebaseRef.on('value', (snap) => {
-    //       // console.log(snap.val())
-    //       const keys = Object.keys(snap.val());
-    //       const latestKey = keys[keys.length - 1];
-    //       const { type } = snap.val()[latestKey];
-    //       const { name, resList } = typeToBuilding(type);
-    //       buildObj(name, resList);
-    //   })
 
     function setup() {
       const mapTexture = PIXI.loader.resources.map.texture;
@@ -96,14 +106,6 @@ export default class extends Component {
       map.width = window.innerWidth;
     }
 
-    function typeToBuilding(type) {
-      switch(type) {
-        case 'lala': return { name: 'storeOne', resList: storeOneList };
-        case 'wooow': return { name: 'storeTwo', resList: storeTwoList };
-        default: return { name: 'storeThree', resList: storeThreeList }
-      }
-
-    }
 
     function buildStore() {
       const nameList = [ 'storeOne', 'storeTwo', 'storeThree', 'storeFour'];

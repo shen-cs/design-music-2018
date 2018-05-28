@@ -17,18 +17,12 @@ import frog from '../assets/scene_1/frog.png';
 
 export default class extends Component {
   
-  // componentWillMount() {
-  //   const firebaseRef = firebase.database().ref('/records');
-  //   firebaseRef.on('value', (snap) => {
-  //     this.setState({
-  //       data: snap.val(),
-  //     })
-  //   })
-  // }
+
   render() {
     const storageRef = firebase.storage().ref();
     const sceneOneRef = storageRef.child('scene_1');
-
+    const databaseRef = firebase.database().ref('/records_1');
+    let records = [];
     let camera, scene, renderer, birds, bird, boid, boids, leaves;
     let frogGeometry, frogMaterial, leafGeometry, leafOneMaterial, leafTwoMaterial;
     let worldPlanes;
@@ -52,6 +46,25 @@ export default class extends Component {
     gui.add(options, 'export');
     gui.add(options, 'exportGIF');
 
+    const typeToAction = {
+      frog: addFrog,
+      leaf: addLeaf,
+      bird: addBird,
+    };
+
+    databaseRef.on('value', (snap) => {
+      if(snap.val()) {
+        const newRecords = Object.values(snap.val());
+        if(newRecords.length !== records.length) {
+          const lastRecord = newRecords[newRecords.length - 1]
+          records.push(lastRecord);
+          // console.log(records);
+          const { type } = lastRecord;
+          // console.log(type);
+          typeToAction[type]();
+        }
+      }
+    })
     const onWindowResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -61,7 +74,6 @@ export default class extends Component {
     const init = () => {
       camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000)
       camera.position.set(0, 0, 500);
-      // camera.position.set(800, 0, 0);
       camera.lookAt(0, 0, 0);
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0xffffff);
@@ -76,7 +88,6 @@ export default class extends Component {
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
       window.addEventListener('resize', onWindowResize, false);
-      // contols = new THREE.OrbitControls(camera);
       const loader = new THREE.TextureLoader();
       loader.load(reservoir, (floorTexture) => {
         const floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
@@ -124,12 +135,9 @@ export default class extends Component {
       planes.push(new THREE.Plane(new THREE.Vector3(0, 0, -1), -200));
       planes.push(new THREE.Plane(new THREE.Vector3(0, 0, 1), -5));
       planes.push(new THREE.Plane(new THREE.Vector3(0, 1, 0), 40));
-      // planes.forEach(plane => {
-      //   helper = new THREE.PlaneHelper(plane, 1000, 0xffff00);
-      //   scene.add(helper);
-      // })
       return planes;
     }
+
     function addFrog() {
       let frog = new THREE.Mesh(frogGeometry, frogMaterial);
       scene.add(frog);
@@ -207,10 +215,6 @@ export default class extends Component {
     function screenshot() {
       const canvas = renderer.domElement;
       const url = canvas.toDataURL();
-      // const a = document.createElement("a");
-      // a.href = url;
-      // a.download = 'wow';
-      // a.click();
       picStrings.push(url);
     }
 
