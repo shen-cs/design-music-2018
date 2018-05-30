@@ -6,13 +6,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+// import AppBar from '@material-ui/core/AppBar';
+// import Toolbar from '@material-ui/core/Toolbar';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+// import Typography from '@material-ui/core/Typography';
+// import IconButton from '@material-ui/core/IconButton';
 import MusicIcon from '@material-ui/icons/MusicVideo';
-import MenuIcon from '@material-ui/icons/Menu';
+// import MenuIcon from '@material-ui/icons/Menu';
+import firebase from '../firebase';
 import Main from './Main';
 import { tracks } from '../constants';
 import '../css/App.css';
@@ -36,6 +37,7 @@ class App extends Component {
   state = {
     open: false,
     trackTitle: '源頭',
+    activePath: '/'
   }
   
   componentWillMount() {
@@ -44,6 +46,23 @@ class App extends Component {
     this.setState({
       trackTitle: title
     })
+    const firebaseRef = firebase.database().ref();
+    const idxToPath = ['/', '/second', '/third', 'fourth', 'fifth', 'sixth'];
+    let controlRefList = [];
+    for(let i = 0; i < 6; i++) {
+      const controlRef = firebaseRef.child(`control_${i+1}`);
+      controlRefList[i] = controlRef;
+      controlRefList[i].on('value', (snap) => {
+        if(snap.val()) {
+          const active = snap.val().active.status;
+          if(active) {
+            this.setState({
+              activePath: idxToPath[i],
+            }, this.navigate(idxToPath[i]))
+          }
+        }
+      })
+    }
   }
 
 
@@ -53,13 +72,18 @@ class App extends Component {
   toggleDrawer = (open) => () => {
     this.setState({ open });
   }
-  navigate = (item) => () => {
-    this.props.history.push(item.path);
-    this.setState({ 
-      open: !this.state.open,
-      trackTitle: item.title
-    });  
+
+  navigate = (path) => () => {
+    console.log(path);
+    this.props.history.push(path);
   }
+  // navigate = (item) => () => {
+  //   this.props.history.push(item.path);
+  //   this.setState({ 
+  //     open: !this.state.open,
+  //     trackTitle: item.title
+  //   });  
+  // }
 
   render() {
     const sidebar = (
@@ -78,7 +102,7 @@ class App extends Component {
         )}
       </List>
     );
-    const { classes } = this.props;
+    // const { classes } = this.props;
     return (
       <div className="col-flex-container" style={{height: '100vh'}}>
         {/* <AppBar position="static">

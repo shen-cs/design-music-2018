@@ -36,8 +36,7 @@ export default class extends Component {
             onMouseUp={this.handleTouchLeave}
             onTouchStart={this.handleTouchStart}
             onTouchEnd={this.handleTouchLeave}
-            onClick={this.props.onClick}
-            onTap={() => console.log('woow')}/>
+            onClick={this.props.onClick}/>
         </div>
       </Grid>
     )

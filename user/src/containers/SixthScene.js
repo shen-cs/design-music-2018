@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { contents } from '../constants';
-import background from '../assets/buttons/six.jpg';
+// import background from '../assets/buttons/six.jpg';
 import '../css/sixth.css';
 import '../css/common.css';
 

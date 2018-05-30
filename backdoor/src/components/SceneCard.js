@@ -3,6 +3,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import red from '@material-ui/core/colors/red';
@@ -18,6 +19,7 @@ class SceneCard extends Component {
     stopped: false,
     exported: false,
     firebaseData: 0,
+    explodeNum: 0,
   }
   componentWillMount() {
     const { sceneNum } = this.props;
@@ -30,6 +32,7 @@ class SceneCard extends Component {
         Object.keys(statusDict).forEach(key => {
           newState[key] = statusDict[key].status;
         })
+        console.log(newState.explodeNum);
         this.setState({
           ...newState,
         })
@@ -78,6 +81,12 @@ class SceneCard extends Component {
     this.controlRef.child('export').set({
       status: true,
     })
+
+    if(this.props.sceneNum === 5) {
+      this.controlRef.child('explodeNum').set({
+        status: this.state.explodeNum + 1
+      });
+    }
   }
   handleDelete = () => {
     this.recordRef.remove();
@@ -89,17 +98,10 @@ class SceneCard extends Component {
     })
     // display side will turn off the active for this scene
   }
-  cleanup = () => {
-    const cleanupList = ['start', 'stop', 'export'];
-    cleanupList.forEach(item => {
-      this.controlRef.child(item).set({
-        status: false,
-      })
-    })
-  }
   render() {
+    console.log(this.state)
     const { sceneNum } = this.props;
-    const { active, started, stopped, exported, firebaseData } = this.state;
+    const { active, started, stopped, exported, firebaseData, } = this.state;
     const subheader = `${active ? 'active': 'inactive'}${started ? ', started' : ''}${stopped ? ', stopped' : ''}`
     return (
       <Card>
@@ -120,8 +122,16 @@ class SceneCard extends Component {
             <Typography variant='subheading' color='inherit' style={{flex: 1}}>
               Export status: {exported ? 'exported' : 'pending'}
             </Typography>
+            { sceneNum !== 5 && this.state.export && !exported && active &&
+              <CircularProgress size={20}/>
+            }
+            { this.state.explodeNum > 0 && sceneNum === 5 &&
+              <Typography variant='caption' color='inherit'>
+                {this.state.explodeNum}
+              </Typography>
+            }
             <Button size="small" color="primary" onClick={this.handleExport} disabled={!active}>
-              Export
+              {sceneNum === 5 ? 'Explode' : 'Export'}
             </Button>
           </div>
         </CardContent>
